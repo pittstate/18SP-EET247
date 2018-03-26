@@ -1,0 +1,100 @@
+
+/***********************************************************************
+ * Assignment and Date: Strings Demo   Apr 2017                                                 
+ *                                                                     
+ * Programmer:  Ondrusek                                                       
+ *                                                                      
+ * Title:  In-Class Demo of various string functions                                                            
+ *                                                                     
+ * Target user:  Students of EET-247                                                      
+ *                                                                     
+ * Specifications: Input 2 strings, one using scanf and the other using   gets                                                  
+ *                                                                     
+ * Inputs/Outputs:   Keyboard, display screen                                                 
+ *                                                                     
+ * Variables: Arrays of char: string_input1, string_input2, string_input3, altest                                                          
+ *               int: count, length_al                                                        
+ * Constants: MAX - maximum array size                                                         
+ *                                                                     
+ * Non-standard Libraries or functions:                                
+ *                                                                      
+ * Description and Purpose:  Demonstrate string commands and functionality                                            
+ *                                                                     
+ * Additional Information:                                             
+ * *********************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 80
+
+int main (void)
+{
+	int count, length_al;
+	char string_input1[MAX], string_input2[MAX], string_input3[MAX], altest[MAX]; 
+	
+//---------Routine to gather input strings using gets & scanf ------------------------
+
+	system("cls");
+	printf("Enter a long string (uses gets) > "); gets(string_input1);   //input using gets function
+	
+	printf("\nEnter a long string (uses scanf) > "); scanf("%s",string_input2); //input using scanf
+	printf("\n\n");	
+
+	system ("pause"); 
+	system("cls");
+	printf("Here is input#1 using gets:  %s \n", string_input1); 
+	printf("Here is input#2 using scanf: %s \n", string_input2);
+
+	strcat(string_input1," EET-447");    strcat(string_input2," EET-447");                           //addng a string to input#1 & inut#2 using strcat
+	strncpy(string_input3, string_input1, strlen(string_input1)+1);                                  //copying string_input1 into string_input3 using strncpy
+	string_input3[strlen(string_input1) +1] = '\0';                                                  // adding a null character to input3
+
+	//------------------ Displaying results -------------------------------------
+
+	puts(" \nThis section is displaying the results of string manipulation using strcat, strlwr & strupr functions");
+	printf("\n Input#1 (all lower case) + Length:  %s  Length: %d \n",strlwr(string_input1), strlen(string_input1)); //displays string_input1 as all lower case letters
+	printf("\n Input#2 (all upper case) + Length:  %s  Length: %d \n",strupr(string_input2), strlen(string_input2)); //displays string_input2 as all upper case letters
+
+	system("pause");
+	printf("\n Here is what you inputted with scanf & displayed using printf:  %s \n Here is result using 'puts' command for displaying the gets input1: ",strupr(string_input2)); 
+	puts(string_input1);                                                                       //demonstration of puts command NOTE: puts adds a line-feed (/n) to the end of thhe display
+
+	getchar();  //pause
+//----------------------Routine to generate string, tic marks index and ascii ----------------------------------------------------------------
+	printf("\n\n This is formating Input#1 allowing for 3 spaces per character renderd using a FOR loop and displaying each array index\n\nSTR");
+	length_al = strlen(string_input3);      //assigns value string_input3 to length_al
+
+	for (count=0; count<length_al; ++count)//Duplicates contents of string_input3 to altest by each array element
+		{ altest[count] = string_input3[count];
+		printf("%4c",altest[count]);
+		} //END for loop
+	
+	printf("\nTIC"); //lables line
+	for (count=0; count<length_al; ++count)   //Generates a ^ charracter(ascii 94) every 5 spaces else a space (ascii 32)
+		{if (count % 5==0) printf("%4c",94);
+			else printf("%4c",32);
+		}//END for loop
+
+	printf("\nIDX");   //lables line
+	for (count=0; count<length_al; ++count) 
+		{if (count % 5==0) printf("%4d",count); 
+			else printf("%4c",32);
+		}//END for loop
+
+	printf("\nASC");   //lebles line                                          
+	for (count=0; count<length_al; ++count) printf("%4d",altest[count]);     //Generates the ascii code for each charracter in the string
+		
+		
+	printf("\n\n\t");
+	system("pause");
+
+
+} //END function main
+	
+	
+	
+	
+	
+

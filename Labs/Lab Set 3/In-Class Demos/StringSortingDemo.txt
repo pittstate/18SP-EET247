@@ -1,0 +1,158 @@
+/***********************************************************************
+ * Assignment and Date:     String Sorting Demo    Apr 2017                                           
+ *                                                                     
+ * Programmer:   Ondrusek                                                      
+ *                                                                      
+ * Title:  String Sorting                                                            
+ *                                                                     
+ * Target user:     EET-247 Students                                                   
+ *                                                                     
+ * Specifications:                                                     
+ *                                                                     
+ * Inputs/Outputs:   Keyboard, Display                                                  
+ *                                                                     
+ * Variables:   char applicants[MAXAPP][STRSIZ],*alpha[MAXAPP]                                                         
+ *                int num_app,index, count                                                     
+ * Constants:   STRSIZ 30, MAXAPP 50, TIME_FACTOR 10e7                                                         
+ *                                                                     
+ * Non-standard Libraries or functions:  string.h, stdlib.h                              
+ *                                                                      
+ * Description and Purpose: demonstrates manipulation of strings showing inputs (gets) and sorting                                             
+ *                                                                     
+ * Additional Information: based on  Figure 8.14  Two Orderings of One List Using an Array of Pointers 
+ *
+ * Maintains two orderings of a list of applicants: the original ordering of the data, and an 
+ * alphabetical ordering accessed through an array of pointers.                                            
+ * ********************************************************************************************/
+
+//***Pre-Processor declariations ***********
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#define STRSIZ 30    /*   maximum string length */
+#define MAXAPP 50    /*   maximum number of applications accepted */
+#define TIME_FACTOR 10e7  //factor used in executing the time-delay 
+
+//------- Declaring Functions -----------
+int alpha_first(char *list[], int min_sub, int max_sub);
+void select_sort_str(char *list[], int n);
+void delay(int time);
+//---------------------MAIN FUNCTION ---------------------
+int main(void)
+{
+      char applicants[MAXAPP][STRSIZ]; /* list of applicants in the
+                                          order in which they applied     */
+      char *alpha[MAXAPP];             /* list of pointers to
+                                          applicants                      */
+      int   num_app,index,                    /* actual number of applicants    */
+            count;
+      //char  one_char;
+
+      /******** Gets applicant list quantity with error checking ***** */
+      do{
+		system("cls");
+		printf("Enter number of applicants (1 . . %d)\n> ", MAXAPP);
+		scanf("%d", &num_app);
+		getchar();		//This flushes the keyboard buffer prior to the gets statement
+		if (num_app>MAXAPP || num_app <=0) 
+			{
+			puts("!!!  Major error...invalid input you looser!!  Try again....");
+			 system("pause");
+			}//END if statement
+	  }// END do-while statement
+	  while (num_app<=0 || num_app >=MAXAPP);
+
+ 
+  //***************** Getting Data Routine ******************************
+		 puts("Enter names of applicants on separate lines of less than");
+		puts(" 30 characters in the order in which they applied\n");
+		for (count= 0; count< num_app; ++count)
+		  {printf("\nEntry %d > ",count);
+			gets(applicants[count]);
+			}//END for loop
+
+	//*****  Routine to capitalize the initial charracter in each name **************
+	/* ASCII characters between 97 - 122 represent the lower letters of the alphabet. Reducing the ASCII number in
+	* the array location converts them to a capital letter. The routine continues to look at each location in the 
+	* array based on the length of the used string and the previous index in the string.  If there is a space (ASCII 32)
+	* the assumption is made that it is the the biginning of another name or initial at the index location*/
+
+	  for(count=0; count<num_app;++count)
+	  {
+		  if (applicants[count][0]>=97 && applicants[count][0]<=122 ) applicants[count][0]=applicants[count][0]-32;
+			for(index=1; index<strlen(applicants[count]);++index)
+				{if (applicants[count][index]>=97 && applicants[count][index]<=122 &&applicants[count][index-1] ==32) 
+					applicants[count][index]=applicants[count][index]-32;
+			}//END for loop-index
+	  }//END for loop-count
+
+/****************** Fills array of pointers and sorts   **************/
+	  for (count= 0; count< num_app; ++count) alpha[count] = applicants[count]; /* copies ONLY address */
+      select_sort_str(alpha, num_app);  //Passes informmation into function select_sort_str
+
+/******************************** Displays both lists  and length of strings   *********/
+printf("\n\n%-30s%5c%-30s%5c%-30s\n\n", "Application Order", ' ', "Alphabetical Order",' ',"Length");delay(3);
+      for (count= 0;  count< num_app;  ++count)
+          {printf("%-30s%5c%-30s%5c %d\n", applicants[count], ' ', alpha[count],' ', strlen(alpha[count]));
+			delay(3);
+			}
+
+puts("\n");	  
+system("pause");
+return(0);
+} //END function: main
+
+
+/*
+ * Finds the index of the string that comes first alphabetically in
+ * elements min_sub..max_sub of list
+ * Pre: list[min_sub] through list[max_sub] are of uniform case;
+ *       max_sub >= min_sub
+*/
+int alpha_first(char *list[],        /* input - array of pointers to strings   */
+            int   min_sub,       /* input - minimum and maximum subscripts */
+            int   max_sub)       /*   of portion of list to consider       */
+{
+      int first, count;
+
+      first = min_sub;
+      for (count= min_sub + 1; count<= max_sub; ++count)
+         if (strcmp(list[count], list[first]) < 0) first = count;
+      return (first);
+}//END function: alpha-first
+
+/*Orders the pointers in array list so they access strings in alphabetical order  
+ * Pre:  first n elements of list reference strings of uniform case;
+ *       n    >= 0
+ */
+void select_sort_str(char *list[], /* input/output - array of pointers being
+                                 ordered to access strings alphabetically */
+                int n)        /* input - number of elements to sort       */
+{
+
+    int fill,            /* index of element to contain next string in order */
+        index_of_min;    /* index of next string in order */
+    char *temp;
+
+    for (fill = 0; fill < n - 1; ++fill) 
+		{
+        index_of_min = alpha_first(list, fill, n - 1);
+
+        if (index_of_min != fill) 
+			{
+              temp = list[index_of_min];
+              list[index_of_min] = list[fill];
+              list[fill] = temp;
+			}//END if statement
+		}//END for statement
+} //END of function: select_sort
+
+
+ //*********************BEGIN Function: delay **************************
+void delay(int time)  //Routine is for time delays. Each value inputted represent 1 second of delay
+{	int count;
+	for (count=0; count < time * TIME_FACTOR; ++count);	
+	return ;
+		
+} //END FUNCTION: delay
+
