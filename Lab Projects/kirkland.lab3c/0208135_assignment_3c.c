@@ -108,6 +108,7 @@ int main(int argc, char **argv)
 	/* know how to do...													 */
 	dataFile = fopen(dataFileName, "r");
 	fileScanStatus = fscanf(dataFile, "%lf", &fileScanItem);
+	fileScanItemSum = fileScanItem;
 
 	system("cls");
 	printf("\n\n");
@@ -115,17 +116,19 @@ int main(int argc, char **argv)
 	printf("\n\n");
 	while(fileScanStatus == 1)
 	{
-		printf("%12.2lf \t",fileScanItem);
+		printf("%8d ",(int)fileScanItem);
+
+		fileScanItemSum = fileScanItemSum + fileScanItem;
+
 		itemArray[fileScanItemCount] = (int)fileScanItem;
 		/* 							it's all ints anyway					 */
 
 		fileScanItemCount++;
 
 		fileScanStatus = fscanf(dataFile, "%lf", &fileScanItem);
-		if((fileScanItemCount % 5) == 0) 
+		if((fileScanItemCount % 9) == 0) 
 			printf("\n");
 
-		fileScanItemSum += fileScanItem;
 		fileScanItem<itemSmallest?itemSmallest=fileScanItem:(fileScanItem > itemLargest)?itemLargest=fileScanItem:doNothing++;
 	}
 
@@ -134,9 +137,10 @@ int main(int argc, char **argv)
 	printf("\n\n");
 	for(int i = 0; i!=CON_LENGTH;i++) printf(LINE_CHAR);
 	printf("\n\nCOUNT total is: %64d",fileScanItemCount);
-	printf("\n\nSUM of numbers is: %61.2lf",fileScanItemSum);
-	printf("\n\nSMALLEST of numbers is: %56.2lf",itemSmallest);
-	printf("\n\nLARGEST of numbers is: %57.2lf",itemLargest);
+	printf("\n\nSUM of numbers is: %61.0lf",fileScanItemSum);
+	printf("\n\nSMALLEST of numbers is: %56.0lf",itemSmallest);
+	printf("\n\nLARGEST of numbers is: %57.0lf",itemLargest);
+	printf("\n\nAVERAGE of numbers is: %57.0lf",(double)(fileScanItemSum/fileScanItemCount));
 	printf("\n\nI did nothing %d times in a conditional operator! (stats for nerds)",doNothing);
 	printf("\n\n");
 	for(int i = 0; i!=CON_LENGTH;i++) printf(LINE_CHAR);
@@ -154,8 +158,8 @@ int main(int argc, char **argv)
 	for(int i=0;i!=CON_LENGTH;i++) printf(LINE_CHAR);
 
 	for(int i=0;i!=fileScanItemCount;i++) {
-		(i%5==0)?printf("\n"):printf("\t");
-		printf("%12d",itemArray[i]);
+		(i%9==0)?printf("\n"):printf(" ");
+		printf("%8d",itemArray[i]);
 
 	}
 
